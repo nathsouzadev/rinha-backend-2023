@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, MaxLength } from 'class-validator';
+import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 
 export class CreatePersonDto {
   @ApiProperty({
@@ -29,7 +29,7 @@ export class CreatePersonDto {
   @ApiProperty({
     example: ['C#', 'Node', 'Oracle'],
   })
-  @IsNotEmpty({ message: 'Required field' })
+  @IsOptional()
   @MaxLength(32, {
     message: 'Is too long. Supports only 32 chars',
     each: true,

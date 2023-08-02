@@ -1,18 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonDto } from '../dto/create-person.dto';
 import { UpdatePersonDto } from '../dto/update-person.dto';
-import { randomUUID } from 'crypto';
+import { PeopleRepository } from '../repository/people.repository';
 
 @Injectable()
 export class PeopleService {
-  create(createPersonDto: CreatePersonDto) {
-    const user = {
-      id: randomUUID(),
-      ...createPersonDto
-    }
-    
-    return { id: user.id }
-  }
+  constructor(private readonly peopleRepository: PeopleRepository) {}
+
+  create = async (createPersonDto: CreatePersonDto) => {
+    const user = await this.peopleRepository.create({
+      ...createPersonDto,
+      stack: createPersonDto.stack ?? [],
+    });
+
+    return { id: user.id };
+  };
 
   findAll() {
     return `This action returns all people`;

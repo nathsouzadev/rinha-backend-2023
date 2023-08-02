@@ -14,7 +14,9 @@ describe('AppController', () => {
 
   describe('root', () => {
     it('should return "Rinha backend 2023 - Nathally Souza"', () => {
-      expect(appController.getHello()).toBe('Rinha backend 2023 - Nathally Souza');
+      expect(appController.getHello()).toBe(
+        'Rinha backend 2023 - Nathally Souza',
+      );
     });
   });
 });

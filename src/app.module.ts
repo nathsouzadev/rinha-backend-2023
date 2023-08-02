@@ -4,17 +4,19 @@ import { PeopleModule } from './people/people.module';
 import { RouterModule } from '@nestjs/core';
 
 @Module({
-  imports: [PeopleModule,
+  imports: [
+    PeopleModule,
     RouterModule.register([
       {
         path: '/',
-        module: AppModule
+        module: AppModule,
       },
       {
         path: 'pessoas',
-        module: PeopleModule
-      }
-    ])],
-  controllers: [AppController]
+        module: PeopleModule,
+      },
+    ]),
+  ],
+  controllers: [AppController],
 })
 export class AppModule {}

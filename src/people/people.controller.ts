@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  HttpStatus,
+  HttpException,
+  ValidationPipe,
+} from '@nestjs/common';
 import { PeopleService } from './service/people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
 import { UpdatePersonDto } from './dto/update-person.dto';
@@ -8,8 +19,26 @@ export class PeopleController {
   constructor(private readonly peopleService: PeopleService) {}
 
   @Post()
-  create(@Body() createPersonDto: CreatePersonDto) {
-    return this.peopleService.create(createPersonDto);
+  async create(
+    @Body(
+      new ValidationPipe({
+        transform: true,
+        errorHttpStatusCode: 422,
+      }),
+    )
+    createPersonDto: CreatePersonDto,
+  ) {
+    try {
+      const user = await this.peopleService.create(createPersonDto);
+      return { id: user.id };
+    } catch (error) {
+      if (error.message.includes('Unique constraint failed')) {
+        throw new HttpException(
+          'Unprocessable Entity',
+          HttpStatus.UNPROCESSABLE_ENTITY,
+        );
+      }
+    }
   }
 
   @Get()
