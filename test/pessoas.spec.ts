@@ -109,4 +109,16 @@ describe('PeopleController (e2e)', () => {
       })
       .expect(422);
   });
+
+  it('should return error when nascimento is invalid', () => {
+    return request(app.getHttpServer())
+      .post('/pessoas')
+      .send({
+        apelido: 'Grace',
+        nome: 'Grace Hooper',
+        nascimento: '01-01-2000',
+        stack: null,
+      })
+      .expect(422);
+  });
 });

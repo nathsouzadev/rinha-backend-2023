@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
+import { IsDateString, IsNotEmpty, IsOptional, MaxLength } from 'class-validator';
 
 export class CreatePersonDto {
   @ApiProperty({
@@ -23,6 +23,7 @@ export class CreatePersonDto {
   @ApiProperty({
     example: '2000-12-01',
   })
+  @IsDateString()
   @IsNotEmpty({ message: 'Required field' })
   nascimento: string;
 
