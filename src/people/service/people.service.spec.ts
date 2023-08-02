@@ -15,6 +15,7 @@ describe('PeopleService', () => {
           provide: PeopleRepository,
           useValue: {
             create: jest.fn(),
+            getById: jest.fn(),
           },
         },
       ],
@@ -71,5 +72,42 @@ describe('PeopleService', () => {
       stack: [],
     });
     expect(user).toMatchObject({ id: expect.any(String) });
+  });
+
+  it('should return user with id', async () => {
+    const mockUserId = randomUUID();
+    const mockGet = jest
+      .spyOn(mockPeopleRepository, 'getById')
+      .mockImplementation(() =>
+        Promise.resolve({
+          id: mockUserId,
+          apelido: 'Deusa',
+          nome: 'Ada Lovelace',
+          nascimento: '2000-10-01',
+          stack: ['C#', 'Node', 'Oracle'],
+        }),
+      );
+
+    const user = await service.findOne(mockUserId);
+    expect(mockGet).toHaveBeenCalledWith(mockUserId);
+    expect(user).toMatchObject({
+      id: mockUserId,
+      apelido: 'Deusa',
+      nome: 'Ada Lovelace',
+      nascimento: '2000-10-01',
+      stack: ['C#', 'Node', 'Oracle'],
+    });
+  });
+
+  it('should return error if user not exists', async () => {
+    const mockUserId = randomUUID();
+    const mockGet = jest
+      .spyOn(mockPeopleRepository, 'getById')
+      .mockImplementation(() => Promise.resolve(null));
+
+    await expect(service.findOne(mockUserId)).rejects.toThrow(
+      new Error('User not found'),
+    );
+    expect(mockGet).toHaveBeenCalledWith(mockUserId);
   });
 });

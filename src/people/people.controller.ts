@@ -3,16 +3,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
-  Delete,
   HttpStatus,
   HttpException,
   ValidationPipe,
 } from '@nestjs/common';
 import { PeopleService } from './service/people.service';
 import { CreatePersonDto } from './dto/create-person.dto';
-import { UpdatePersonDto } from './dto/update-person.dto';
 
 @Controller()
 export class PeopleController {
@@ -47,17 +44,14 @@ export class PeopleController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.peopleService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePersonDto: UpdatePersonDto) {
-    return this.peopleService.update(+id, updatePersonDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.peopleService.remove(+id);
+  async findOne(@Param('id') id: string) {
+    try {
+      const user = await this.peopleService.findOne(id);
+      return user;
+    } catch (error) {
+      if (error.message === 'User not found') {
+        throw new HttpException('Not found', HttpStatus.NOT_FOUND);
+      }
+    }
   }
 }

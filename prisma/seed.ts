@@ -8,7 +8,7 @@ const persons = [
     nome: 'Katherine Johnson',
     apelido: 'Kath',
     nascimento: '2000-01-01',
-    stack: [],
+    stack: ['JS', 'Clojure', 'PHP'],
   },
 ];
 

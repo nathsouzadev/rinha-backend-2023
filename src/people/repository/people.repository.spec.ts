@@ -16,6 +16,7 @@ describe('PeopleRepository', () => {
           useValue: {
             person: {
               create: jest.fn(),
+              findUnique: jest.fn(),
             },
           },
         },
@@ -53,6 +54,31 @@ describe('PeopleRepository', () => {
     });
     expect(customer).toMatchObject({
       id: expect.any(String),
+    });
+  });
+
+  it('should return user with id', async () => {
+    const mockUserId = randomUUID();
+    const mockFind = jest
+      .spyOn<any, any>(mockPrismaService.person, 'findUnique')
+      .mockImplementation(() =>
+        Promise.resolve({
+          id: mockUserId,
+          apelido: 'Deusa',
+          nome: 'Ada Lovelace',
+          nascimento: '2000-10-01',
+          stack: ['C#', 'Node', 'Oracle'],
+        }),
+      );
+
+    const user = await repository.getById(mockUserId);
+    expect(mockFind).toHaveBeenCalledWith({ where: { id: mockUserId } });
+    expect(user).toMatchObject({
+      id: mockUserId,
+      apelido: 'Deusa',
+      nome: 'Ada Lovelace',
+      nascimento: '2000-10-01',
+      stack: ['C#', 'Node', 'Oracle'],
     });
   });
 });

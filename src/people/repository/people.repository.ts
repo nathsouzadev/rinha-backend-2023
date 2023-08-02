@@ -17,4 +17,7 @@ export class PeopleRepository {
 
     return { id: user.id };
   };
+
+  getById = async (id: string) =>
+    this.prisma.person.findUnique({ where: { id } });
 }

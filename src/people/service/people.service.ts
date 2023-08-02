@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePersonDto } from '../dto/create-person.dto';
-import { UpdatePersonDto } from '../dto/update-person.dto';
 import { PeopleRepository } from '../repository/people.repository';
 
 @Injectable()
@@ -20,15 +19,13 @@ export class PeopleService {
     return `This action returns all people`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} person`;
-  }
+  findOne = async (id: string) => {
+    const user = await this.peopleRepository.getById(id);
 
-  update(id: number, updatePersonDto: UpdatePersonDto) {
-    return `This action updates a #${id} person`;
-  }
+    if (!user) {
+      throw new Error('User not found');
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} person`;
-  }
+    return user;
+  };
 }
