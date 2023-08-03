@@ -146,4 +146,35 @@ describe('PeopleController (e2e)', () => {
         .expect(404);
     });
   });
+
+  describe('GET /pessoas?t=?', () => {
+    it('should return users with terms', () => {
+      const terms = ['kath', 'Johnson', 'JS']
+      for(const term of terms){
+        return request(app.getHttpServer())
+        .get(`/pessoas?t=${term}`)
+        .expect(200)
+        .then(async (response) => {
+          expect(response.body).toMatchObject([
+            {
+              id: 'e1347b38-dfcd-42a3-894c-42ccfc35a54f',
+              nome: 'Katherine Johnson',
+              apelido: 'Kath',
+              nascimento: '2000-01-01',
+              stack: ['JS', 'Clojure', 'PHP'],
+            }
+          ]);
+        });
+      }
+    });
+
+    it('should return empty array', () => {
+      return request(app.getHttpServer())
+        .get('/pessoas?t=node')
+        .expect(200)
+        .then(async (response) => {
+          expect(response.body).toMatchObject([]);
+        });
+    });
+  });
 });

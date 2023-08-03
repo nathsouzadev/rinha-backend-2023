@@ -15,9 +15,7 @@ export class PeopleService {
     return { id: user.id };
   };
 
-  findAll() {
-    return `This action returns all people`;
-  }
+  findByTerm = async (term: string) => this.peopleRepository.findByTerm(term);
 
   findOne = async (id: string) => {
     const user = await this.peopleRepository.getById(id);

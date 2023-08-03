@@ -20,4 +20,30 @@ export class PeopleRepository {
 
   getById = async (id: string) =>
     this.prisma.person.findUnique({ where: { id } });
+
+  findByTerm = async (term: string) =>
+    this.prisma.person.findMany({
+      take: 50,
+      where: {
+        OR: [
+          {
+            apelido: {
+              contains: term,
+              mode: 'insensitive'
+            },
+          },
+          {
+            nome: {
+              contains: term,
+              mode: 'insensitive'
+            },
+          },
+          {
+            stack: {
+              has: term,
+            },
+          },
+        ],
+      },
+    });
 }

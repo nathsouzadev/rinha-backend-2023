@@ -16,6 +16,7 @@ describe('PeopleService', () => {
           useValue: {
             create: jest.fn(),
             getById: jest.fn(),
+            findByTerm: jest.fn(),
           },
         },
       ],
@@ -109,5 +110,33 @@ describe('PeopleService', () => {
       new Error('User not found'),
     );
     expect(mockGet).toHaveBeenCalledWith(mockUserId);
+  });
+
+  it('should return all users with term', async () => {
+    const mockFind = jest
+      .spyOn(mockPeopleRepository, 'findByTerm')
+      .mockImplementation(() =>
+        Promise.resolve([
+          {
+            id: randomUUID(),
+            apelido: 'Deusa',
+            nome: 'Ada Lovelace',
+            nascimento: '2000-10-01',
+            stack: ['C#', 'Node', 'Oracle'],
+          },
+        ]),
+      );
+
+    const users = await service.findByTerm('c#');
+    expect(mockFind).toHaveBeenCalledWith('c#');
+    expect(users).toMatchObject([
+      {
+        id: expect.any(String),
+        apelido: 'Deusa',
+        nome: 'Ada Lovelace',
+        nascimento: '2000-10-01',
+        stack: ['C#', 'Node', 'Oracle'],
+      },
+    ]);
   });
 });

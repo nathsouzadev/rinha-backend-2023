@@ -4,6 +4,7 @@ import {
   Post,
   Body,
   Param,
+  Request,
   HttpStatus,
   HttpException,
   ValidationPipe,
@@ -38,11 +39,6 @@ export class PeopleController {
     }
   }
 
-  @Get()
-  findAll() {
-    return this.peopleService.findAll();
-  }
-
   @Get(':id')
   async findOne(@Param('id') id: string) {
     try {
@@ -53,5 +49,10 @@ export class PeopleController {
         throw new HttpException('Not found', HttpStatus.NOT_FOUND);
       }
     }
+  }
+
+  @Get()
+  async search(@Request() request: any) {
+    return this.peopleService.findByTerm(request.query.t)
   }
 }

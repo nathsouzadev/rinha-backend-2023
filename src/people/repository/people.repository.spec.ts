@@ -17,6 +17,7 @@ describe('PeopleRepository', () => {
             person: {
               create: jest.fn(),
               findUnique: jest.fn(),
+              findMany: jest.fn(),
             },
           },
         },
@@ -80,5 +81,57 @@ describe('PeopleRepository', () => {
       nascimento: '2000-10-01',
       stack: ['C#', 'Node', 'Oracle'],
     });
+  });
+
+  it('should return results contains term', async () => {
+    const mockTerm = 'some';
+    const mockFind = jest
+      .spyOn<any, any>(mockPrismaService.person, 'findMany')
+      .mockImplementation(() =>
+        Promise.resolve([
+          {
+            id: randomUUID(),
+            apelido: 'Deusa',
+            nome: 'Ada Lovelace',
+            nascimento: '2000-10-01',
+            stack: ['C#', 'Node', 'Oracle'],
+          },
+        ]),
+      );
+
+    const users = await repository.findByTerm(mockTerm);
+    expect(mockFind).toHaveBeenCalledWith({
+      take: 50,
+      where: {
+        OR: [
+          {
+            apelido: {
+              contains: mockTerm,
+              mode: 'insensitive'
+            },
+          },
+          {
+            nome: {
+              contains: mockTerm,
+              mode: 'insensitive'
+            },
+          },
+          {
+            stack: {
+              has: mockTerm,
+            },
+          },
+        ],
+      },
+    });
+    expect(users).toMatchObject([
+      {
+        id: expect.any(String),
+        apelido: 'Deusa',
+        nome: 'Ada Lovelace',
+        nascimento: '2000-10-01',
+        stack: ['C#', 'Node', 'Oracle'],
+      },
+    ]);
   });
 });
